@@ -25,5 +25,12 @@ export LD_LIBRARY_PATH="/grp/software/Linux/multinest_test/anaconda3/lib"
 export PATH=/grp/software/Linux/multinest_test_python2.7/anaconda2/bin:$PATH
 export PYTHONPATH=<path_to_local_chimera_package>:$PYTHONPATH
 ```
-
 And you're all set!
+
+## Compile!
+```
+rm _tran_module.so
+python setup.py build_ext —inplace
+rm cea2.x
+./compile_cea_64bit.com
+```
