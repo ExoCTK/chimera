@@ -15,7 +15,7 @@ source deactivate
 Then `cd` into the Linux directory containing the `pyMultiNest` install with
 
 ```
-cd /grp/software/Linux/multinest_test
+cd /grp/software/Linux/multinest_test_python2.7
 ```
 
 Finally, add the `MultiNest` library path and the modules path to your environment with
