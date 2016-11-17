@@ -27,10 +27,19 @@ export PYTHONPATH=<path_to_local_chimera_package>:$PYTHONPATH
 ```
 And you're all set!
 
-## Compile!
+# Compile `chimera`
+
+While logged into a science server, `cd` into the `chimera/OPERATIONAL_HOT_JUPITER_SIMPLE_CLOUD_CLEAR` directory and run
+
 ```
 rm _tran_module.so
 python setup.py build_ext —inplace
 rm cea2.x
 ./compile_cea_64bit.com
 ```
+
+Then `cd` back to the `MultiNest` install on the science server with
+
+`cd /grp/software/Linux/multinest_test_python2.7`
+
+All set!
