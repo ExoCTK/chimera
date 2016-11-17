@@ -23,8 +23,8 @@ Finally, add the `MultiNest` library path, the Linux path, the `chimera` modules
 ```
 export LD_LIBRARY_PATH="/grp/software/Linux/multinest_test/anaconda3/lib"
 export PATH=/grp/software/Linux/multinest_test_python2.7/anaconda2/bin:$PATH
-export PYTHONPATH=<path_to_local_chimera_package>/OPERATIONAL_HOT_JUPITER_SIMPLE_CLOUD_CLEAR:$PYTHONPATH
-export PYTHONPATH=<path_to_local_chimera_package>/ABSCOEFF:$PYTHONPATH
+export PYTHONPATH=<path_to_central_storage_chimera_package>/OPERATIONAL_HOT_JUPITER_SIMPLE_CLOUD_CLEAR:$PYTHONPATH
+export PYTHONPATH=<path_to_central_storage_chimera_package>/ABSCOEFF:$PYTHONPATH
 ```
 And you're all set!
 
