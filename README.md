@@ -18,12 +18,13 @@ Then `cd` into the Linux directory containing the `pyMultiNest` install with
 cd /grp/software/Linux/multinest_test_python2.7
 ```
 
-Finally, add the `MultiNest` library path and the modules path to your environment with
+Finally, add the `MultiNest` library path, the Linux path, the `chimera` modules path, and the `chimera` coefficients path to your environment with
 
 ```
 export LD_LIBRARY_PATH="/grp/software/Linux/multinest_test/anaconda3/lib"
 export PATH=/grp/software/Linux/multinest_test_python2.7/anaconda2/bin:$PATH
 export PYTHONPATH=<path_to_local_chimera_package>/OPERATIONAL_HOT_JUPITER_SIMPLE_CLOUD_CLEAR:$PYTHONPATH
+export PYTHONPATH=<path_to_local_chimera_package>/ABSCOEFF:$PYTHONPATH
 ```
 And you're all set!
 
