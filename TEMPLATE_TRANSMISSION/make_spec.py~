@@ -1,0 +1,81 @@
+import matplotlib as mpl
+mpl.use('TkAgg')
+from matplotlib.pyplot import *
+from fm_interp import *
+import pickle
+from matplotlib.ticker import FormatStrFormatter
+rc('font',family='serif')
+
+#the parameters
+#planet/star system params--typically not free parameters in retrieval
+Rp= 1.370#0.930#*x[4]# Planet radius in Jupiter Radii--this will be forced to be 10 bar radius--arbitrary (scaling to this is free par)
+Rstar=2.72#0.598   #Stellar Radius in Solar Radii
+M =0.195 #1.78    #Mass in Jupiter Masses
+#TP profile params (3--Guillot 2010, Parmentier & Guillot 2013--see Line et al. 2013a for implementation)
+Tirr=1100#1500#x[0]#544.54 #terminator **isothermal** temperature--if full redistribution this is equilibrium temp
+logKir=-0.5  #TP profile IR opacity controlls the "vertical" location of the gradient
+logg1=-1     #single channel Vis/IR opacity. Controls the delta T between deep T and TOA T
+#Composition parameters---assumes "chemically consistnat model" described in Kreidberg et al. 2015
+logMet=0.0#x[1]#1.5742E-2 #.   #Metallicity relative to solar log--solar is 0, 10x=1, 0.1x = -1 used -1.01*log10(M)+0.6
+logCtoO=-0.26#x[2]#-1.97  #log C-to-O ratio: log solar is -0.26
+logPQCarbon=-5.5  #CH4, CO, H2O Qunech pressure--forces CH4, CO, and H2O to constant value at quench pressure value
+logPQNitrogen=-5.5  #N2, NH3 Quench pressure--forces N2 and NH3 to ""  --ad hoc for chemical kinetics--reasonable assumption
+#A&M Cloud parameters
+logKzz=9 #log Rayleigh Haze Amplitude (relative to H2)
+fsed=3.0 #haze slope--4 is Rayeigh, 0 is "gray" or flat.  
+logPbase=-1.  #gray "large particle" cloud opacity (-35 - -25)
+logCldVMR=-6.0 #cloud fraction
+xRp=0.78
+
+#reading in noise instead
+wlgrid, y_meas, err, junk, junk,junk=np.loadtxt('kelt11b_laura_reduction.txt').T
+y_meas=y_meas
+err=err
+
+#seting up input state vector. Must be in this order as indicies are hard wired in fx inside fm
+           #  0    1        2       3     4      5              6           7     8    9     10     11     12     13
+x=np.array([Tirr, logKir,logg1, logMet, logCtoO, logPQCarbon,logPQNitrogen, Rp*xRp, Rstar, M, logKzz, fsed,logPbase,logCldVMR])
+
+
+#read in external noise file if available
+#wlgrid, SNR=np.loadtxt('FINESSE.txt').T  #must have same wlgrid as CK coeffs
+
+#calling forward model
+#thermochemical gas profile scaling factors
+# 0   1    2    3   4    5    6     7    8    9   10    11   12   13    14   15   16   17   18
+#H2O  CH4  CO  CO2 NH3  N2   HCN   H2S  PH3  C2H2 C2H6  Na    K   TiO   VO   FeH  H    H2   He
+gas_scale=np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]) #can be made free params if desired (won't affect mmw)
+y_binned,y_mod,wnocrop,atm=fx(x,wlgrid,gas_scale)  #returns model spectrum, wavenumber grid, and vertical abundance profiles from chemistry
+
+ymin=np.min(y_binned)*1E2*0.9
+ymax=np.max(y_binned)*1E2*1.1
+fig1, ax=subplots()
+xlabel('$\lambda$ ($\mu$m)',fontsize=18)
+ylabel('(R$_{p}$/R$_{*}$)$^{2} \%$',fontsize=18)
+minorticks_on()
+errorbar(wlgrid, y_meas*100, yerr=err*100, xerr=None, fmt='Dk')
+plot(wlgrid, y_binned*1E2,'ob')
+plot(1E4/wnocrop, y_mod*1E2)
+ax.set_xscale('log')
+ax.set_xticks([0.3, 0.5,0.6,0.8,1, 2, 3, 4, 5, 7, 10])
+ax.axis([0.3,5,ymin,ymax])
+
+'''
+gas_scale=np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.])*0. #can be made free params if desired (won't affect mmw)
+y_binned,y_mod,wnocrop,atm=fx(x,wlgrid,gas_scale)  #returns model spectrum, wavenumber grid, and vertical abundance profiles from chemistry
+plot(wlgrid, y_binned*1E2,'r')
+'''
+ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+ax.tick_params(length=10,width=1,labelsize='large',which='major')
+savefig('spectrum.pdf',fmt='pdf')
+show()
+close()
+
+
+pdb.set_trace()
+
+
+
+
+
+
